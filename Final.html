@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saricala_FInals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+ 
+<body>
+    <div class ="container-fluid text-center">
+        <div class="row">
+            <div class="col-lg-12 " style="background-color:skyblue;border: 2px solid black">
+                <p style="font-size: 30px;font-weight: bold;">Select Method:</p>
+                <label style="font-weight: bold;"><input type="radio" id="Get" name="method"style="height:15px; width:15px;">Get</label>
+                <label style="font-weight: bold;"><input type="radio" id="Post" name="method" style="height:15px; width:15px;">Post</label>
+            </div>
+            <div class="col-lg-6" style="background-color:cyan;border: 2px solid black;">
+                <p style="font-size: 30px;font-weight: bold;">Mood:</p>
+                <input type="radio" id="Happy" name="mood"  value="Happy"style="height:20px; width:20px;">Happy
+                <input type="radio" id="Lazy" name="mood" value="Lazy"style="height:20px; width:20px;">Lazy
+                <input type="radio" id="Groovy"  name="mood" value="Groovy"style="height:20px; width:20px;">Groovy
+                <input type="radio" id="Jolly" name="mood" value="Jolly"style="height:20px; width:20px;">Jolly
+            </div>
+            <div class="col-lg-6" style="background-color:whitesmoke;border: 2px solid black">
+                <p style="font-size: 30px;font-weight: bold;">Animal:</p>
+                <input type="radio" id="Fox" name="Animals"  value="Fox"style="height:20px; width:20px;">Fox
+                <input type="radio" id="Pig" name="Animals" value="Pig"style="height:20px; width:20px;">Pig
+                <input type="radio" id="Wolf"  name="Animals" value="Wolf"style="height:20px; width:20px;">Wolf
+                <input type="radio" id="Bear" name="Animals" value="Bear"style="height:20px; width:20px;">Bear
+            </div>
+
+        </div>
+    </div> 
+    <form id="myform" style="text-align: center;">
+        <br>
+        <input type="submit" value="Execute" style="background-color: lightgreen;color: black;border: 1px;height: 40px;width: 100px;font-weight: bold;font-family: monospace;"><br><br>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="clearform()">Clear Table</button>
+    <br>
+    <p style="font-size: 30px;font-weight: bold;text-align: center;">Output:</p><br>
+    <div class="alert alert-success" role="alert" style="text-align: center;"> 
+        <h2 id="result"></h2>
+    </div>
+    <script>
+        var radio_get = document.getElementById("Get")
+        var radio_post = document.getElementById("Post")
+    
+        var form = document.getElementById("myform")
+    
+        form.addEventListener("submit", function(e){
+            e.preventDefault()
+            if(radio_get.checked){
+                getResponse()
+            }
+            else if(radio_post.checked){
+                postResponse()
+            }      
+        })
+
+        async function postResponse(){
+           if(document.getElementById("Happy").checked){
+                var Mood = document.getElementById("Happy").value
+           }else if(document.getElementById("Lazy").checked){
+                var Mood = document.getElementById("Lazy").value
+           }else if(document.getElementById("Groovy").checked){
+                var Mood = document.getElementById("Groovy").value
+           }else if(document.getElementById("Jolly").checked){
+                var Mood = document.getElementById("Jolly").value
+           }
+           if(document.getElementById("Fox").checked){
+                var Animal = document.getElementById("Fox").value
+           }else if(document.getElementById("Pig").checked){
+                var Animal = document.getElementById("Pig").value
+           }else if(document.getElementById("Wolf").checked){
+                var Animal = document.getElementById("Wolf").value
+           }else if(document.getElementById("Bear").checked){
+                var Animal = document.getElementById("Bear").value
+           }
+
+           const response = await fetch ('https://jsonplaceholder.typicode.com/posts', {
+                method:'POST',
+                body:JSON.stringify({
+                    title:Mood,
+                    body:Animal
+                    
+                }),
+                headers:{
+                    'Content-type':'application/json; charset=UTF-8'
+                }
+            })
+            if(!response.ok){
+                throw new Error ("Something went wrong" + response.statusText)
+            }
+            const data = await response.json()
+            console.log(data)
+            var Title_result = "<b>Mood: </b>" + data.title + "<br/>"
+            var Body_result = "<b>Animal: </b>" + data.body
+
+            document.getElementById("result").innerHTML = Title_result + Body_result
+        }
+
+        async function getResponse(){
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+                if(!response.ok){
+                    throw new Error("Something Went Wrong" + response.statusText)
+                }
+                const data = await response.json()
+                console.log(data)
+                let x = Math.floor(Math.random() * 100)
+                document.getElementById("result").innerHTML = "<b>Title: </b>" + data[x].title +"<br>"+ "<b>Body: </b>" + data[x].body
+                
+        }
+        async function clearform(){
+            document.getElementById("Get").checked=false
+            document.getElementById("Post").checked=false
+            document.getElementById("Happy").checked=false
+            document.getElementById("Lazy").checked=false
+            document.getElementById("Groovy").checked=false
+            document.getElementById("Jolly").checked=false
+            document.getElementById("Fox").checked=false
+            document.getElementById("Pig").checked=false
+            document.getElementById("Wolf").checked=false
+            document.getElementById("Bear").checked=false
+            document.getElementById("result").innerHTML = ""
+
+        }
+        
+        
+       
+
+
+    </script>
+</body>
+</html>
